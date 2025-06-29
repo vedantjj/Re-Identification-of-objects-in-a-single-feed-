@@ -1,1 +1,47 @@
+Player Re-Identification Using YOLOv8 and DeepSORT
+1. My Approach and Methodology
+For this project, I implemented a real-time player Re-Identification (Re-ID) system using a two-stage tracking-by-detection pipeline.
+
+Stage 1: Detection
+I used a custom-trained YOLOv8 model (best (1).pt) to detect players, referees, and balls in each frame of a sports video.
+
+Stage 2: Tracking
+After filtering for just the "player" class, I passed those detections to DeepSORT, which assigns a persistent ID to each player by combining motion prediction and visual features.
+
+This modular approach allowed me to combine a powerful object detector with a reliable tracking system that can handle occlusions and ID consistency.
+
+2. Techniques I Tried and Their Outcomes
+YOLOv8 for Object Detection
+I used the YOLOv8 model via the Ultralytics API and applied it to each frame using OpenCV.
+Outcome: The model was effective in identifying players, referees, and balls, producing accurate bounding boxes and labels with good confidence levels.
+
+DeepSORT for Multi-Object Tracking
+I integrated the deep-sort-realtime library and passed in only player detections in the required format.
+Outcome: This worked well—each player was assigned a unique, consistent ID throughout the video, even as they moved around or temporarily overlapped with others.
+
+3. Challenges I Faced
+Model File Error
+I initially ran into a PytorchStreamReader error because the YOLO model file was corrupted.
+I resolved this by re-downloading a complete version of the .pt file.
+
+Windows Path Issues
+A SyntaxError occurred due to incorrect backslashes in the video file path.
+I fixed it by using raw strings (e.g., r"C:\path\to\video.mp4").
+
+Slow Processing on CPU
+The system was too slow for real-time use, taking around 2.5 seconds per frame.
+This was due to CPU-only processing, which I noted as a major performance bottleneck.
+
+4. What’s Left and How I Would Proceed
+The core objective of tracking players in a single video is complete and functional. However, if I had more time or access to better resources, here’s how I’d move forward:
+
+Speed Improvements
+I would migrate the pipeline to run on a CUDA-enabled GPU to achieve actual real-time performance.
+
+Better Tracking Stability
+I would tune DeepSORT’s parameters like max_age and n_init for better accuracy, and experiment with newer trackers like ByteTrack or BoT-SORT.
+
+Exporting Results
+I would implement saving the annotated output video using cv2.VideoWriter and add functionality to export the tracking data (frame number, ID, bounding boxes) to a CSV file for analysis or visualization.
+
 
